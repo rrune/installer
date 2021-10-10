@@ -20,8 +20,10 @@ func main() {
 	ok, err := dlgs.Question("<Programm>", "Möchtest du <Programm> installieren?", true)
 	Check(err)
 	if ok {
-		installer.Dest, _, err = dlgs.File("Wähle das Installationsverzeichnis:", "", true)
+		dest, _, err := dlgs.File("Wähle das Installationsverzeichnis:", "", true)
 		Check(err)
+		installer.SetDest(dest)
+
 		installer.Install()
 		_, err = dlgs.Info("<Programm>", "<Programm> wurde installiert.")
 		Check(err)
