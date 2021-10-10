@@ -1,10 +1,12 @@
 package util
 
-import "github.com/sqweek/dialog"
+import "github.com/ncruces/zenity"
 
 func Check(err error) {
 	if err != nil {
-		dialog.Message("%s", "Ein Fehler ist aufgetreten").Title("<Programm>").Info()
+		zenity.Error("Ein Fehler ist aufgetreten.",
+			zenity.Title("<Programm>"),
+			zenity.ErrorIcon)
 		panic(err)
 	}
 }

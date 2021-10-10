@@ -4,9 +4,9 @@ import (
 	_ "embed"
 	"encoding/json"
 
+	"github.com/ncruces/zenity"
 	"github.com/rrune/installer/installer"
 	. "github.com/rrune/installer/util"
-	"github.com/sqweek/dialog"
 )
 
 //go:embed config.json
@@ -17,11 +17,20 @@ func main() {
 	err := json.Unmarshal(configJson, &installer)
 	Check(err)
 
-	ok := dialog.Message("%s", "Möchtest du <Programm> installiren?").Title("<Programm>").YesNo()
-	if ok {
-		installer.Dest, err = dialog.Directory().Title("Wähle das Installationsverzeichnis aus:").Browse()
+	err = zenity.Question("Möchtest du <Programm> installieren?",
+		zenity.Title("<Programm>"),
+		zenity.QuestionIcon)
+
+	if err == nil {
+		installer.Dest, err = zenity.SelectFile(
+			zenity.Filename(""),
+			zenity.Directory())
 		Check(err)
+
 		installer.Install()
-		dialog.Message("%s", "<Programm> wurde installiert,").Title("<Programm>").Info()
+
+		zenity.Info("Installiert.",
+			zenity.Title("<Programm>"),
+			zenity.InfoIcon)
 	}
 }
