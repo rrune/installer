@@ -4,9 +4,9 @@ import (
 	_ "embed"
 	"encoding/json"
 
+	"github.com/gen2brain/dlgs"
 	"github.com/rrune/installer/installer"
 	. "github.com/rrune/installer/util"
-	"github.com/sqweek/dialog"
 )
 
 //go:embed config.json
@@ -17,11 +17,13 @@ func main() {
 	err := json.Unmarshal(configJson, &installer)
 	Check(err)
 
-	ok := dialog.Message("%s", "Möchtest du <Programm> installiren?").Title("<Programm>").YesNo()
+	ok, err := dlgs.Question("<Programm>", "Möchtest du <Programm> installieren?", true)
+	Check(err)
 	if ok {
-		installer.Dest, err = dialog.Directory().Title("Wähle das Installationsverzeichnis aus:").Browse()
+		installer.Dest, _, err = dlgs.File("Wähle das Installationsverzeichnis:", "", true)
 		Check(err)
 		installer.Install()
-		dialog.Message("%s", "<Programm> wurde installiert,").Title("<Programm>").Info()
+		_, err = dlgs.Info("<Programm>", "<Programm> wurde installiert.")
+		Check(err)
 	}
 }
