@@ -22,10 +22,11 @@ func main() {
 		zenity.QuestionIcon)
 
 	if err == nil {
-		installer.Dest, err = zenity.SelectFile(
+		dest, err := zenity.SelectFile(
 			zenity.Filename(""),
 			zenity.Directory())
 		Check(err)
+		installer.SetDest(dest)
 
 		installer.Install()
 

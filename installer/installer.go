@@ -19,6 +19,10 @@ type installer struct {
 	Dest     string
 }
 
+func (i installer) SetDest(dest string) {
+	i.Dest = dest
+}
+
 func (i installer) Install() {
 	Check(i.download())
 	Check(i.unzip())
