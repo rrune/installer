@@ -25,6 +25,10 @@ func (i installer) Install() {
 	os.RemoveAll(i.Temp)
 }
 
+func (i installer) SetDest(dest string) {
+	i.Dest = dest
+}
+
 func (i installer) download() error {
 	var err error
 	// Create temp dir

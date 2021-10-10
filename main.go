@@ -19,8 +19,10 @@ func main() {
 
 	ok := dialog.Message("%s", "Möchtest du <Programm> installiren?").Title("<Programm>").YesNo()
 	if ok {
-		installer.Dest, err = dialog.Directory().Title("Wähle das Installationsverzeichnis aus:").Browse()
+		dest, err := dialog.Directory().Title("Wähle das Installationsverzeichnis aus:").Browse()
 		Check(err)
+		installer.SetDest(dest)
+
 		installer.Install()
 		dialog.Message("%s", "<Programm> wurde installiert,").Title("<Programm>").Info()
 	}
