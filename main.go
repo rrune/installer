@@ -29,7 +29,7 @@ func main() {
 
 		installer.Install()
 
-		zenity.Info("Installiert.",
+		zenity.Info("<Programm> wurde installiert.",
 			zenity.Title("<Programm>"),
 			zenity.InfoIcon)
 	}
