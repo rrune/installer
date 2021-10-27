@@ -10,7 +10,7 @@ go build -ldflags -H=windowsgui
 # Notes
 - There are three branches, each of them using a different Dialog window framework. All of them should work on Windows, Linux and MacOS. Linux and MacOS are untested
 - `filename` in `config.json` can be anything
-- `temp`in `config.json`can be anything, but should be something that doesn't exist.
+- `temp` in `config.json`can be anything, but should be something that doesn't exist.
 
 # Todo
 - Progress Bar
