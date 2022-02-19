@@ -1,12 +1,15 @@
 package main
 
 import (
+	"bytes"
 	_ "embed"
 	"encoding/json"
+	"image"
 	"os"
 
 	"fyne.io/fyne/v2"
 	"fyne.io/fyne/v2/app"
+	"fyne.io/fyne/v2/canvas"
 	"fyne.io/fyne/v2/container"
 	"fyne.io/fyne/v2/data/binding"
 	"fyne.io/fyne/v2/dialog"
@@ -18,6 +21,9 @@ import (
 //go:embed config.json
 var configJson []byte
 
+//go:embed 212th.png
+var img []byte
+
 func main() {
 	inst := installer.New()
 	err := json.Unmarshal(configJson, &inst)
@@ -25,8 +31,14 @@ func main() {
 		panic(err)
 	}
 
+	imData, _, err := image.Decode(bytes.NewReader(img))
+	if err != nil {
+		panic(err)
+	}
+
 	a := app.New()
 	w := a.NewWindow("Installer")
+	w.Resize(fyne.NewSize(700, 500))
 
 	dest := binding.NewString()
 	out := binding.NewString()
@@ -37,6 +49,10 @@ func main() {
 			dest.Set(inst.Dest)
 		}
 	}, w)
+
+	image := canvas.NewImageFromImage(imData)
+	image.FillMode = canvas.ImageFillContain
+	image.SetMinSize(fyne.NewSize(100, 100))
 
 	path := widget.NewLabel("Selected path:")
 	input := widget.NewLabelWithData(dest)
@@ -81,14 +97,20 @@ func main() {
 
 			out.Set("Done")
 			progress.Stop()
+			progress.Hide()
 			finishBtn.Show()
 		} else {
 			out.Set("Select a directory")
 		}
 	})
 
-	content := container.New(layout.NewVBoxLayout(), pathContainer, installBtn, outLabel, progress, finishBtn)
+	imgContainer := container.New(layout.NewHBoxLayout(), image, layout.NewSpacer())
 
-	w.SetContent(content)
+	content := container.New(layout.NewVBoxLayout(), pathContainer, installBtn, outLabel, progress, finishBtn)
+	contentPadding := container.New(layout.NewPaddedLayout(), content)
+
+	final := container.New(layout.NewVBoxLayout(), imgContainer, contentPadding)
+
+	w.SetContent(final)
 	w.ShowAndRun()
 }
