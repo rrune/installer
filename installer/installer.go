@@ -8,31 +8,27 @@ import (
 	"os"
 	"path/filepath"
 	"strings"
-
-	. "github.com/rrune/installer/util"
 )
 
-type installer struct {
+type Installer struct {
 	Url      string `json:"url"`
 	Filename string `json:"filename"`
-	Temp     string `json:"temp"`
+	Temp     string
 	Dest     string
 }
 
-func (i installer) Install() {
-	Check(i.download())
-	Check(i.unzip())
-	os.RemoveAll(i.Temp)
+func New() *Installer {
+	return &Installer{}
 }
 
-func (i installer) SetDest(dest string) {
+func (i *Installer) SetDest(dest string) {
 	i.Dest = dest
 }
 
-func (i installer) download() error {
+func (i *Installer) Download() error {
 	var err error
 	// Create temp dir
-	err = os.Mkdir("temp", 0666)
+	i.Temp, err = os.MkdirTemp("", "Installer")
 	if err != nil {
 		return err
 	}
@@ -59,7 +55,7 @@ func (i installer) download() error {
 	return nil
 }
 
-func (i installer) unzip() error {
+func (i *Installer) Unzip() error {
 
 	r, err := zip.OpenReader(i.Temp + i.Filename)
 	if err != nil {
@@ -109,8 +105,4 @@ func (i installer) unzip() error {
 		}
 	}
 	return nil
-}
-
-func New() *installer {
-	return &installer{}
 }
